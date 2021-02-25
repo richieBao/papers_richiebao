@@ -34,3 +34,26 @@ def Sentinel2_bandFNs(MTD_MSIL2A_fn):
     # print('get sentinel-2 bands path:\n',band_fns_dict)
     
     return band_fns_list,band_fns_dict  
+
+def start_time():
+    import datetime
+    '''
+    function-计算当前时间
+    '''
+    start_time=datetime.datetime.now()
+    print("start time:",start_time)
+    return start_time
+
+def duration(start_time):
+    import datetime
+    '''
+    function-计算持续时间
+    
+    Paras:
+    start_time - 开始时间
+    '''
+    end_time=datetime.datetime.now()
+    print("end time:",end_time)
+    duration=(end_time-start_time).seconds/60
+    print("Total time spend:%.2f minutes"%duration)
+    return band_fns_list,band_fns_dict  
