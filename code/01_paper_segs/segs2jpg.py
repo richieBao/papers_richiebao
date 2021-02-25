@@ -27,7 +27,7 @@ def segs_unique_elements(seg_Path):
 
 if __name__ == '__main__':
     unique_elements=segs_unique_elements(seg_Path)
-    UE=unique_elements[:5000] #5000,10000,
+    UE=unique_elements#[:5000] #5000,10000,
     
 
     with Pool(8) as p:
