@@ -61,26 +61,31 @@ img_rgb=bandsComposite(bands_fn)
 with open(seg_Path,'rb') as f:
     segs=pickle.load(f)
 
+seg_fail_list=[]
+
 def segs2rgb(seg):
     import copy
     import matplotlib    
     import numpy as np
 
-    seg_mask=np.squeeze(segs==seg)
-    i, j = np.where(seg_mask)
-    indices = np.meshgrid(np.arange(min(i), max(i) + 1),
-                          np.arange(min(j), max(j) + 1),
-                          indexing='ij')    
-    
-    # i_, j_ = np.where(~seg_mask)   
-    # img_deepCopy=copy.deepcopy(img_rgb)
-    # img_deepCopy[tuple([i_,j_])]=0
-    # seg_img=img_deepCopy[tuple(indices)]    
-    
-    seg_img=img_rgb[tuple(indices)]
-    seg_mask_rec=seg_mask[tuple(indices)]
-    i_, j_ = np.where(~seg_mask_rec)   
-    seg_img[tuple([i_,j_])]=0    
-    
-    
-    matplotlib.image.imsave(os.path.join(seg_imgs_root,"{}.jpg".format(seg)),seg_img)
+    try:
+        seg_mask=np.squeeze(segs==seg)
+        i, j = np.where(seg_mask)
+        indices = np.meshgrid(np.arange(min(i), max(i) + 1),
+                              np.arange(min(j), max(j) + 1),
+                              indexing='ij')    
+        
+        # i_, j_ = np.where(~seg_mask)   
+        # img_deepCopy=copy.deepcopy(img_rgb)
+        # img_deepCopy[tuple([i_,j_])]=0
+        # seg_img=img_deepCopy[tuple(indices)]    
+        
+        seg_img=img_rgb[tuple(indices)]
+        seg_mask_rec=seg_mask[tuple(indices)]
+        i_, j_ = np.where(~seg_mask_rec)   
+        seg_img[tuple([i_,j_])]=0    
+        
+        
+        matplotlib.image.imsave(os.path.join(seg_imgs_root,"{}.jpg".format(seg)),seg_img)
+    except:
+        seg_fail_list.append(seg)
