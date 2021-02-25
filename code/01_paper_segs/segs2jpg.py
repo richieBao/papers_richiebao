@@ -9,6 +9,9 @@ from multiprocessing import Pool
 import numpy as np
 import segs2jpg_pool
 from tqdm import tqdm
+import glob
+from pathlib import Path
+import copy
 
 #Chicago
 seg_Path=r'D:\data_paper\paper_01_segsCluster\results/all_seg_9.pkl'
@@ -25,9 +28,21 @@ def segs_unique_elements(seg_Path):
     
     return unique_elements
 
+
+#Chicago
+seg_imgs_root=r'D:\data_paper\paper_01_segsCluster\sentinel2_RGB_all'
+def check_file(data_list,data_root,suffix='jpg'):
+    fns=glob.glob(data_root+"/*.{}".format(suffix))
+    fns_stem=[int(Path(fn).stem) for fn in fns]
+    none_existed=set(data_list)-set(fns_stem)
+    
+    return list(none_existed)
+
+
 if __name__ == '__main__':
     unique_elements=segs_unique_elements(seg_Path)
-    UE=unique_elements#[:5000] #5000,10000,
+    UE=copy.deepcopy(unique_elements) #[:5000] #5000,10000,
+    UE=check_file(UE,seg_imgs_root)
     
 
     with Pool(8) as p:

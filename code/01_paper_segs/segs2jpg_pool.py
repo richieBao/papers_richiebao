@@ -73,12 +73,7 @@ def segs2rgb(seg):
         i, j = np.where(seg_mask)
         indices = np.meshgrid(np.arange(min(i), max(i) + 1),
                               np.arange(min(j), max(j) + 1),
-                              indexing='ij')    
-        
-        # i_, j_ = np.where(~seg_mask)   
-        # img_deepCopy=copy.deepcopy(img_rgb)
-        # img_deepCopy[tuple([i_,j_])]=0
-        # seg_img=img_deepCopy[tuple(indices)]    
+                              indexing='ij')      
         
         seg_img=img_rgb[tuple(indices)]
         seg_mask_rec=seg_mask[tuple(indices)]
