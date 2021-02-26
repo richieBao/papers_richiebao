@@ -85,6 +85,41 @@ def pixel_reduction_interval(idx_nz,interval=100):
     
     return idx_df.iloc[idx].to_numpy()
 
+def pixel_buffer(idx_nz,dist=10,interval_a=10,interval_b=10):
+    def displacement(row):
+        return [row[1],row[0]]
+    import pandas as pd
+    pixel_df=pd.DataFrame(idx_nz)   
+    # pixel_df.sort_values(by=0,axis=1,inplace=True)
+    # pixel_df.set_index(keys=[0],drop=False,inplace=True) #append=True,
+    
+    rows_extraction=[]
+    for i,g in pixel_df.groupby(0):
+        if i%interval_b==0:
+            # print(i,"_"*50,"\n",g)
+            # print(g[:dist].append(g[-dist:]))
+            idx=list(range(0,len(g),interval_a))
+            g_=g.iloc[idx]    
+            rows_extraction.append(g_[:dist].append(g_[-dist:]))
+    # print(pixel_df)
+    
+    for i,g in pixel_df.groupby(1):
+        if i%interval_b==0:
+            # print(i,"_"*50,"\n",g)
+            idx=list(range(0,len(g),interval_a))
+            g_s=g.iloc[idx]
+            g_=g_s[[1,0]]
+            # print(g_)
+            rows_extraction.append(g_[:dist].append(g_[-dist:]))
+        
+
+    rows_extraction_df=pd.concat(rows_extraction)
+    # print(rows_extraction_df.shape)    
+    rows_extraction_df.drop_duplicates(inplace=True)
+    # print(rows_extraction_df.shape) 
+    return rows_extraction_df.to_numpy()
+
+
 flatten_lst=lambda lst: [m for n_lst in lst for m in flatten_lst(n_lst)] if type(lst) is list else [lst]
 
 def numConcat(num):     
@@ -95,7 +130,7 @@ fns=glob.glob(imgs_root+"/*.{}".format(suffix))
 
 
 if __name__ == '__main__':
-    for img_fn in tqdm(fns[:10]):  
+    for img_fn in tqdm(fns[2:3]):  
         fn_stem=int(Path(img_fn).stem)
         img=Image.open(img_fn)
         # img.show()
@@ -103,20 +138,18 @@ if __name__ == '__main__':
         img_array=np.asarray(img)
         # print(img_array.shape)
         # print(img_array)
-        rectangles=[]
+        # rectangles=[]
         img_mean=np.mean(img_array,axis=-1)
-        img_bool=img_mean==0 
+        # img_bool=img_mean==0 
         # print(img_mean.shape)
         row_n=img_mean.shape[0]
         col_n=img_mean.shape[1]
         # print(row_n,col_n)
         idx_nz=np.argwhere(img_mean!=0) #np.nonzero(img_mean)
         # print(idx_nz.shape)
-        idx_nz_list=idx_nz.tolist()
-        
-        pixel_ri=pixel_reduction_interval(idx_nz,interval=50)    
+        idx_nz_list=idx_nz.tolist()  
     
-        idx=pixel_ri
+        idx=pixel_buffer(idx_nz,dist=5,interval_a=5,interval_b=5)
         # s_t=utils.start_time()
         prod_args=partial(inscribed_rec_imgMask_pool.recs, args=[row_n,col_n,idx_nz_list])
         with Pool(8) as p:
