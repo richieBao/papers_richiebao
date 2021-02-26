@@ -56,4 +56,3 @@ def duration(start_time):
     print("end time:",end_time)
     duration=(end_time-start_time).seconds/60
     print("Total time spend:%.2f minutes"%duration)
-    return band_fns_list,band_fns_dict  

@@ -28,7 +28,6 @@ def segs_unique_elements(seg_Path):
     
     return unique_elements
 
-
 #Chicago
 seg_imgs_root=r'D:\data_paper\paper_01_segsCluster\sentinel2_RGB_all'
 def check_file(data_list,data_root,suffix='jpg'):
@@ -41,8 +40,8 @@ def check_file(data_list,data_root,suffix='jpg'):
 
 if __name__ == '__main__':
     unique_elements=segs_unique_elements(seg_Path)
-    UE=copy.deepcopy(unique_elements) #[:5000] #5000,10000,
-    UE=check_file(UE,seg_imgs_root)
+    UE_=copy.deepcopy(unique_elements) #[:5000] #5000,10000,
+    UE=check_file(UE_,seg_imgs_root)
     
 
     with Pool(8) as p:
