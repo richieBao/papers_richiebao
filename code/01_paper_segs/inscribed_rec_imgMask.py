@@ -125,12 +125,29 @@ flatten_lst=lambda lst: [m for n_lst in lst for m in flatten_lst(n_lst)] if type
 def numConcat(num):     
     num1, num2=num
     return np.array("({},{})".format(num1,num2),dtype='object')
+
 fns=glob.glob(imgs_root+"/*.{}".format(suffix))
 # fns_stem=[int(Path(fn).stem) for fn in fns]
 
+#Chicago
+recs_root=r'D:\data_paper\paper_01_segsCluster\sentinel2_RGB_all_rec'
+def check_file(ori_fns,data_root,suffix='jpg'):
+    rec_fns=glob.glob(data_root+"/*.{}".format(suffix))
+    # print(fns)
+    rec_fns_stem=[int(Path(fn).stem) for fn in rec_fns]
+    # ori_fns_stem=[int(Path(fn).stem) for fn in ori_fns]
+    # print(len(rec_fns_stem),len(ori_fns_stem))
+    
+    # none_existed=set(ori_fns_stem)-set(rec_fns_stem)
+    # print(len(none_existed))
+    fns_none_existed=[fn for fn in ori_fns if int(Path(fn).stem) not in rec_fns_stem]
+    print(len(fns_none_existed))
+    return fns_none_existed
+fns_rest=check_file(fns,recs_root,suffix='jpg')
+
 
 if __name__ == '__main__':
-    for img_fn in tqdm(fns[2:3]):  
+    for img_fn in tqdm(fns_rest):  
         fn_stem=int(Path(img_fn).stem)
         img=Image.open(img_fn)
         # img.show()
