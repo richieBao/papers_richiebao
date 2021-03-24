@@ -32,7 +32,7 @@ def config():
     args=parser.parse_args()    
     return args
 
-def sentinel2_crop(args,):
+# def sentinel2_crop(args,):
 def sentinel2_crop(args):
     MTD_fn=os.path.join(args.sentinel2_root,'MTD_MSIL2A.xml')
     crop_folder=r'cropped'
@@ -71,12 +71,15 @@ def sentinel2_processing(MTD_fn,crop=True):
 def superpixel_segmentation_quickshift_NDVI(args):
     bands_selection=["B02_10m","B03_10m","B04_10m","B08_10m"] 
     croppedImgs_fns=glob.glob(args.cropped_path+"/*.jp2")
+    # print(croppedImgs_fns)
     croppedBands_fnsDict={f.split('_')[-3]+'_'+f.split('_')[-2]:f for f in croppedImgs_fns}
     cropped_stack_bands=[croppedBands_fnsDict[b] for b in bands_selection]
     cropped_array_stack,_=es.stack(cropped_stack_bands)
 
     cropped_array_stack_float=cropped_array_stack.astype(float)
     NDVI=(cropped_array_stack_float[3]-cropped_array_stack_float[2])/(cropped_array_stack_float[3]+cropped_array_stack_float[2])
+    print(NDVI.max(),NDVI.min())
+    
     img_=np.append(cropped_array_stack[:2],np.expand_dims(NDVI,axis=0),axis=0)
     img=np.stack([normalize_(array) for array in img_]).transpose(1,2,0)
     
@@ -104,7 +107,6 @@ def main():
     args=config()   
     #01-crop
     sentinel2_crop(args)
-    
 
 def segs_mark_boundaries_show(args,seg_name):
     with open(os.path.join(args.segs_save_path,seg_name),'rb') as f:
@@ -143,7 +145,7 @@ if __name__ == '__main__':
     #02-superpixel_segmentation_quickshift
     superpixel_segmentation_quickshift_NDVI(args)
     #03-show segmentation mark boundaries
-    seg_name=r'seg_5.pkl'
-    img_rgb=segs_mark_boundaries_show(args,seg_name)
+    # seg_name=r'seg_5.pkl'
+    # img_rgb=segs_mark_boundaries_show(args,seg_name)
     #04-save segs as RGB.jpg masked with value=0
-    main()
+    # main()
